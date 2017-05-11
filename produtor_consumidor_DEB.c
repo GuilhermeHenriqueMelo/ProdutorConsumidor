@@ -22,6 +22,7 @@ void *produtor(void *argumentos){
 	while (1){
 		if (posicoes_ocupadas == TOTAL) {
 			printf("!!! Produtor Esperando   !!!\n");
+			pthread_cond_wait(&buffer_cheio, &mutexP); // Estou tentando com esses mutex's! Caso não dê certo, utilizar os mutex's que a professora criou!!!
 		} else {
 			pthread_mutex_lock(&mutexP);
 		 
@@ -45,6 +46,7 @@ void *consumidor(void *argumentos){
 	while(1){
 		if (posicoes_ocupadas == 0) {
 			printf("!!!  Consumidor Esperando  !!!\n");
+			pthread_cond_wait(&buffer_vazio, &mutexC);
 		} else {
 			pthread_mutex_lock(&mutexC);
 
@@ -71,9 +73,6 @@ pthread_t thread_consumidor;
 	pthread_create(&thread_produtor, NULL, produtor, NULL);
 // Criando thread do consumidor
 	pthread_create(&thread_consumidor, NULL, consumidor, NULL);
-
-	//pthread_mutex_destroy(&mutexP);
-	//pthread_mutex_destroy(&mutexC);
 
 	pthread_exit(NULL);
 	return 0; /* O programa não vai chegar aqui. */
